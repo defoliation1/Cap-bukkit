@@ -1,6 +1,7 @@
 package pers.defoliation.cap;
 
 import engine.command.CommandManager;
+import engine.command.anno.MethodAnnotationCommand;
 import engine.command.argument.ArgumentManager;
 import engine.command.argument.SimpleArgumentManager;
 import engine.command.impl.SimpleCommandManager;
@@ -18,6 +19,8 @@ public class BukkitCommand {
     private SuggesterManager suggesterManager = new SimpleSuggesterManager();
 
     private BukkitCommand() {
+        argumentManager.setClassDefaultArgument(new WorldArgument());
+        argumentManager.setClassDefaultArgument(new PlayerArgument());
     }
 
     public CommandManager getCommandManager() {
@@ -31,4 +34,12 @@ public class BukkitCommand {
     public ArgumentManager getArgumentManager() {
         return argumentManager;
     }
+
+    public MethodAnnotationCommand.AnnotationCommandBuilder getBuilder() {
+        return MethodAnnotationCommand.getBuilder(simpleCommandManager)
+                .setArgumentManager(argumentManager)
+                .setSuggesterManager(suggesterManager)
+                .addProvider(new LocationProvider());
+    }
+
 }

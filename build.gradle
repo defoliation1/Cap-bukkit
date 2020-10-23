@@ -26,6 +26,10 @@ test {
 dependencies {
     compile 'com.google.guava:guava:27.1-jre'
     compile 'org.apache.commons:commons-lang3:3.8.1'
+    compile group: 'org.ow2.asm', name: 'asm', version: '7.1'
+    compile group: 'org.ow2.asm', name: 'asm-tree', version: '7.1'
+    compile group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
+    compile group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'
     compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
