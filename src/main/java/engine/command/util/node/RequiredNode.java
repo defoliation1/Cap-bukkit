@@ -1,5 +1,6 @@
 package engine.command.util.node;
 
+import com.google.common.collect.Lists;
 import engine.command.CommandSender;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
@@ -29,7 +30,7 @@ public class RequiredNode extends CommandNode {
 
     @Override
     public Suggester getSuggester() {
-        return (sender, command, args) -> List.of(require);
+        return (sender, command, args) -> Lists.newArrayList(require);
     }
 
     public String getRequire() {

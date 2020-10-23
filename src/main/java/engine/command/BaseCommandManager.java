@@ -65,7 +65,7 @@ public abstract class BaseCommandManager implements CommandManager {
         }
 
         if (args == null || args.length == 0) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         return command.suggest(sender, args);
@@ -80,10 +80,10 @@ public abstract class BaseCommandManager implements CommandManager {
     @Override
     public List<String> getTips(CommandSender sender, String name, String... args) {
         if (name == null || name.isEmpty())
-            return List.of();
+            return Collections.emptyList();
         Command commandInstance = commands.get(name);
         if (commandInstance == null)
-            return List.of();
+            return Collections.emptyList();
         return commandInstance.getTips(sender, args);
     }
 

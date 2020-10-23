@@ -4,6 +4,7 @@ import engine.command.ArgumentCheckResult;
 import engine.command.Command;
 import engine.command.CommandSender;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SimpleCommand extends Command {
@@ -29,13 +30,13 @@ public class SimpleCommand extends Command {
 
     @Override
     public List<String> suggest(CommandSender sender, String[] args) {
-        if (completer == null) return List.of();
+        if (completer == null) return Collections.emptyList();
         return completer.suggest(sender, this, args);
     }
 
     @Override
     public List<String> getTips(CommandSender sender, String[] args) {
-        if (tips == null) return List.of();
+        if (tips == null) return Collections.emptyList();
         return tips.getTips(sender, args);
     }
 
