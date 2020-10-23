@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: "idea"
 
-group 'com.github.unknowndomaingame'
+group 'pers.defoliation'
 version '1.0.0'
 
 sourceCompatibility = targetCompatibility = 8
@@ -14,6 +14,9 @@ tasks.withType(JavaCompile) {
 repositories {
     jcenter()
     mavenCentral()
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+    }
 }
 
 test {
@@ -23,7 +26,7 @@ test {
 dependencies {
     compile 'com.google.guava:guava:27.1-jre'
     compile 'org.apache.commons:commons-lang3:3.8.1'
-
+    compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
