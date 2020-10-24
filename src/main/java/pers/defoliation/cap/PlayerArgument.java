@@ -16,7 +16,11 @@ public class PlayerArgument extends SimpleArgument<Player> {
 
     @Override
     public Optional<Player> parse(String arg) {
-        return Optional.ofNullable(Bukkit.getPlayer(arg));
+        Player player = Bukkit.getPlayer(arg);
+        if (player != null) {
+            return Optional.of(player);
+        }
+        return Optional.empty();
     }
 
     @Override

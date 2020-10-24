@@ -62,6 +62,6 @@ public class HashPermissible implements Permissible {
 
     @Override
     public Map<String, Boolean> toPermissionMap() {
-        return Map.copyOf(permissionMap);
+        return new HashMap<>(permissionMap);
     }
 }

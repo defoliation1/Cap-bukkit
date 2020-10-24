@@ -2,13 +2,31 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: "idea"
 
-group 'pers.defoliation'
-version '1.0.0'
 
 sourceCompatibility = targetCompatibility = 8
 
+group 'pers.defoliation'
+version releaseTime()+'.1'
+
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'plugin.yml'
+        expand 'version': "${project.version}"
+    }
+}
+
+jar {
+    setArchiveName(
+            "${getArchivesBaseName()}-${project.version}.jar"
+    )
+}
+
+def releaseTime() {
+    return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("UTC"))
 }
 
 repositories {
@@ -16,6 +34,9 @@ repositories {
     mavenCentral()
     maven {
         url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
 

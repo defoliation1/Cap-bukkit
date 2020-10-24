@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -20,12 +21,12 @@ public class PlayerCommandSender {
 
     private static Constructor constructor;
 
-    public static CapCommandSender getSender(Player player) {
+    public static Player getSender(Player player) {
         if (constructor == null) {
             definePlayerCommandSender();
         }
         try {
-            return (CapCommandSender) constructor.newInstance(player);
+            return (Player) constructor.newInstance(player);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -41,6 +42,7 @@ public class PlayerCommandSender {
         classNode.name = "PlayerCommandSender";
         classNode.superName = Type.getInternalName(CapCommandSender.class);
         classNode.interfaces = Collections.singletonList(Type.getInternalName(Player.class));
+        classNode.version = V1_8;
 
         if (classNode.fields == null)
             classNode.fields = new ArrayList<>();
@@ -49,12 +51,13 @@ public class PlayerCommandSender {
         if (classNode.methods == null)
             classNode.methods = new ArrayList<>();
 
-        MethodNode constructorMethod = new MethodNode(ACC_PUBLIC, "<init>", "(L" + Type.getDescriptor(Player.class) + ";)V", null, null);
+        MethodNode constructorMethod = new MethodNode(ACC_PUBLIC, "<init>", "(" + Type.getDescriptor(Player.class) + ")V", null, null);
 
+        constructorMethod.instructions = new InsnList();
         InsnList instructions = constructorMethod.instructions;
         instructions.add(new VarInsnNode(ALOAD, 0));
         instructions.add(new VarInsnNode(ALOAD, 1));
-        instructions.add(new MethodInsnNode(INVOKESPECIAL, Type.getInternalName(CapCommandSender.class), "<init>", "(L" + Type.getDescriptor(CommandSender.class) + ";)V", false));
+        instructions.add(new MethodInsnNode(INVOKESPECIAL, Type.getInternalName(CapCommandSender.class), "<init>", "(" + Type.getDescriptor(CommandSender.class) + ")V", false));
         instructions.add(new VarInsnNode(ALOAD, 0));
         instructions.add(new VarInsnNode(ALOAD, 1));
         instructions.add(new FieldInsnNode(PUTFIELD, classNode.name, "player", Type.getDescriptor(Player.class)));
@@ -62,39 +65,38 @@ public class PlayerCommandSender {
 
         classNode.methods.add(constructorMethod);
 
+        HashSet<String> methodName = new HashSet<>();
+
         for (Method method : Player.class.getMethods()) {
+            if (methodName.contains(method.getName() + Type.getMethodDescriptor(method)))
+                continue;
+            methodName.add(method.getName() + Type.getMethodDescriptor(method));
             MethodNode methodNode = new MethodNode(ACC_PUBLIC, method.getName(), Type.getMethodDescriptor(method), null, Arrays.stream(method.getExceptionTypes()).map(Type::getInternalName).collect(Collectors.toList()).toArray(new String[0]));
+            methodNode.instructions = new InsnList();
             InsnList instructions1 = methodNode.instructions;
             instructions1.add(new VarInsnNode(ALOAD, 0));
             instructions1.add(new FieldInsnNode(GETFIELD, classNode.name, "player", Type.getDescriptor(Player.class)));
-            for (int i = 0; i < method.getParameterTypes().length; i++) {
-                instructions1.add(new VarInsnNode(ALOAD, i + 1));
+            Type[] argumentTypes = Type.getArgumentTypes(method);
+            int offset = 1;
+            for (Type argumentType : argumentTypes) {
+                instructions1.add(new VarInsnNode(argumentType.getOpcode(ILOAD), offset));
+                offset += argumentType.getSize();
             }
             instructions1.add(new MethodInsnNode(INVOKEVIRTUAL, Type.getInternalName(Player.class), method.getName(), Type.getMethodDescriptor(method)));
             if (method.getReturnType() != null) {
-                if (method.getReturnType() == int.class) {
-                    instructions1.add(new InsnNode(IRETURN));
-                } else if (method.getReturnType() == long.class) {
-                    instructions1.add(new InsnNode(LRETURN));
-                } else if (method.getReturnType() == float.class) {
-                    instructions1.add(new InsnNode(FRETURN));
-                } else if (method.getReturnType() == double.class) {
-                    instructions1.add(new InsnNode(DRETURN));
-                } else
-                    instructions1.add(new InsnNode(ARETURN));
+                instructions1.add(new InsnNode(Type.getType(method.getReturnType()).getOpcode(IRETURN)));
             } else {
                 instructions1.add(new InsnNode(RETURN));
             }
             classNode.methods.add(methodNode);
         }
-
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         byte[] bytes = classWriter.toByteArray();
 
         ClassLoader classLoader = PlayerCommandSender.class.getClassLoader();
         try {
-            Method defineClass = classLoader.getClass().getDeclaredMethod("defineClass", byte[].class, int.class, int.class);
+            Method defineClass = ClassLoader.class.getDeclaredMethod("defineClass", byte[].class, int.class, int.class);
             defineClass.setAccessible(true);
             try {
                 Class clazz = (Class) defineClass.invoke(classLoader, bytes, 0, bytes.length);
@@ -108,6 +110,10 @@ public class PlayerCommandSender {
             e.printStackTrace();
         }
 
+    }
+
+    public static void init() {
+        definePlayerCommandSender();
     }
 
 }

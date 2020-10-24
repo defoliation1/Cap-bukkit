@@ -4,6 +4,7 @@ package engine.command.argument.base;
 import engine.command.argument.SimpleArgument;
 import engine.command.suggestion.Suggester;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,6 @@ public class IntegerArgument extends SimpleArgument {
 
     @Override
     public Suggester getSuggester() {
-        return (sender, command, args) -> List.of("[num]");
+        return (sender, command, args) -> Arrays.asList("[num]");
     }
 }

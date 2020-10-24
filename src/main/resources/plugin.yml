@@ -1,0 +1,3 @@
+main: pers.defoliation.cap.CapPlugin
+name: CapPlugin
+version: ${version}

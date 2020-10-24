@@ -3,6 +3,7 @@ package engine.command.argument.base;
 import engine.command.argument.Argument;
 import engine.command.suggestion.Suggester;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,6 @@ public class FloatArgument extends Argument {
 
     @Override
     public Suggester getSuggester() {
-        return (sender, command, args) -> List.of("[float]");
+        return (sender, command, args) -> Arrays.asList("[float]");
     }
 }

@@ -3,6 +3,8 @@ package engine.command.argument.base;
 import engine.command.argument.Argument;
 import engine.command.suggestion.Suggester;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class BooleanArgument extends Argument {
     @Override
     public Suggester getSuggester() {
         return (sender, command, args) -> {
-            List<String> completeSet = List.of("true", "false");
+            List<String> completeSet = Arrays.asList("true", "false");
             if (args != null && !args[args.length - 1].isEmpty()){
                 return completeSet.stream().filter(completeName -> completeName.startsWith(args[args.length - 1])).collect(Collectors.toList());
             }

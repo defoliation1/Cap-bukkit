@@ -2,12 +2,13 @@ package pers.defoliation.cap;
 
 import engine.command.CommandException;
 import engine.command.CommandSender;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class CapCommandSender implements CommandSender, org.bukkit.command.Comma
 
     @Override
     public void sendCommandException(CommandException exception) {
-        sendMessage("§4"+exception.getType()+"§r message: "+exception.getMessage());
+        sendMessage("command exception: " + exception.getType() + " message: " + exception.getMessage());
     }
 
     @Override
@@ -139,4 +140,12 @@ public class CapCommandSender implements CommandSender, org.bukkit.command.Comma
     public void setOp(boolean value) {
         bukkitSender.setOp(value);
     }
+
+    public static CommandSender getCapSender(org.bukkit.command.CommandSender sender) {
+        if (sender instanceof Player) {
+            return (CommandSender) PlayerCommandSender.getSender((Player) sender);
+        }
+        return new CapCommandSender(sender);
+    }
+
 }
