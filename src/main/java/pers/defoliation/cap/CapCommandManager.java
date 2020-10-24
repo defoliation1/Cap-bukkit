@@ -16,6 +16,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,17 +50,36 @@ public class CapCommandManager {
         return argumentManager;
     }
 
-    public MethodAnnotationCommand.AnnotationCommandBuilder getBuilder() {
-        return MethodAnnotationCommand.getBuilder(simpleCommandManager)
+    public AnnotationCommandBuilder getBuilder() {
+        return new AnnotationCommandBuilder();
+    }
+
+    public class AnnotationCommandBuilder {
+
+        private MethodAnnotationCommand.AnnotationCommandBuilder builder = MethodAnnotationCommand.getBuilder(simpleCommandManager)
                 .setArgumentManager(argumentManager)
                 .setSuggesterManager(suggesterManager)
                 .addProvider(new LocationProvider());
-    }
 
-    public void registerCommand(List<Command> commandList) {
-        for (Command command : commandList) {
-            simpleCommandMap.register(plugin.getName(), new CapCommand(command.getName(), command.getDescription(), command.getHelpMessage()));
+        public AnnotationCommandBuilder addProvider(Object object) {
+            builder.addProvider(object);
+            return this;
         }
+
+        public AnnotationCommandBuilder addCommandHandler(Object object) {
+            builder.addCommandHandler(object);
+            return this;
+        }
+
+        public void register() {
+            builder.register();
+            for (Command command : simpleCommandManager.registeredCommands()) {
+                if (simpleCommandMap.getCommand(plugin.getDescription().getName() + ":" + command.getName()) == null) {
+                    simpleCommandMap.register(plugin.getDescription().getName(), new CapCommand(command.getName(), command.getDescription(), command.getHelpMessage()));
+                }
+            }
+        }
+
     }
 
     private class CapCommand extends BukkitCommand {
@@ -70,27 +90,30 @@ public class CapCommandManager {
 
         @Override
         public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-            StringBuilder stringBuilder = new StringBuilder("/" + commandLabel + " ");
+            StringBuilder stringBuilder = new StringBuilder(commandLabel + " ");
             for (String arg : args) {
                 stringBuilder.append(arg + " ");
             }
             simpleCommandManager.execute(CapCommandSender.getCapSender(sender), stringBuilder.substring(0, stringBuilder.length() - 1));
+            Bukkit.getLogger().info(stringBuilder.toString());
+            simpleCommandManager.registeredCommands().stream().map(Command::getName).forEach(Bukkit.getLogger()::info);
             return true;
         }
 
         @Override
         public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-            StringBuilder stringBuilder = new StringBuilder("/" + alias + " ");
+            StringBuilder stringBuilder = new StringBuilder(alias + " ");
             for (String arg : args) {
                 stringBuilder.append(arg + " ");
             }
+            Bukkit.getLogger().info(alias+" "+ Arrays.toString(args));
             return simpleCommandManager.complete(CapCommandSender.getCapSender(sender), stringBuilder.substring(0, stringBuilder.length() - 1));
         }
     }
 
     static {
         try {
-            Field simpleCommandMapField = SimplePluginManager.class.getField("commandMap");
+            Field simpleCommandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
             simpleCommandMapField.setAccessible(true);
             simpleCommandMap = (SimpleCommandMap) simpleCommandMapField.get(Bukkit.getPluginManager());
         } catch (NoSuchFieldException | IllegalAccessException e) {
