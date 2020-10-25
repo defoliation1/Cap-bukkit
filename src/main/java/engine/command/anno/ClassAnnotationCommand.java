@@ -124,8 +124,7 @@ public class ClassAnnotationCommand extends NodeAnnotationCommand {
                 try {
                     Permission permission = commandHandler.getClass().getMethod("run", new Class[0]).getAnnotation(Permission.class);
                     if (permission != null) {
-                        Set<String> needPermission = new HashSet<>(Arrays.asList(permission.value()));
-                        nodeList.forEach(node -> node.setNeedPermission(needPermission));
+                        nodeList.forEach(node -> node.setPermissionExpression(permission.value()));
                     }
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();

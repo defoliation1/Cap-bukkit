@@ -15,7 +15,7 @@ public abstract class CommandNode implements Cloneable, Comparable<CommandNode> 
 
     private List<CommandNode> children = new ArrayList<>();
 
-    private Set<String> needPermission = new HashSet();
+    private String permissionExpression;
 
     private Suggester suggester;
 
@@ -111,13 +111,14 @@ public abstract class CommandNode implements Cloneable, Comparable<CommandNode> 
         return executor;
     }
 
-    public Set<String> getNeedPermission() {
-        return needPermission;
+    public String getPermissionExpression() {
+        return permissionExpression;
     }
 
-    public void setNeedPermission(Set<String> needPermission) {
-        this.needPermission = needPermission;
+    public void setPermissionExpression(String permission) {
+        this.permissionExpression = permission;
     }
+
 
     public Suggester getSuggester() {
         return suggester;
