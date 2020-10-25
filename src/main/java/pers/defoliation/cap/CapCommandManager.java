@@ -94,7 +94,6 @@ public class CapCommandManager {
                 stringBuilder.append(arg + " ");
             }
             simpleCommandManager.execute(CapCommandSender.getCapSender(sender), stringBuilder.substring(0, stringBuilder.length() - 1));
-            simpleCommandManager.registeredCommands().stream().map(Command::getName).forEach(Bukkit.getLogger()::info);
             return true;
         }
 
