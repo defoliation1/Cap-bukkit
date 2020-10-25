@@ -16,7 +16,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -95,7 +94,6 @@ public class CapCommandManager {
                 stringBuilder.append(arg + " ");
             }
             simpleCommandManager.execute(CapCommandSender.getCapSender(sender), stringBuilder.substring(0, stringBuilder.length() - 1));
-            Bukkit.getLogger().info(stringBuilder.toString());
             simpleCommandManager.registeredCommands().stream().map(Command::getName).forEach(Bukkit.getLogger()::info);
             return true;
         }
@@ -106,7 +104,6 @@ public class CapCommandManager {
             for (String arg : args) {
                 stringBuilder.append(arg + " ");
             }
-            Bukkit.getLogger().info(alias+" "+ Arrays.toString(args));
             return simpleCommandManager.complete(CapCommandSender.getCapSender(sender), stringBuilder.substring(0, stringBuilder.length() - 1));
         }
     }

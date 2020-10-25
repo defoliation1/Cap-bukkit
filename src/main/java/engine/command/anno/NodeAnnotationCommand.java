@@ -122,7 +122,7 @@ public class NodeAnnotationCommand extends Command implements Nodeable {
     }
 
     private void parse(CommandNode node, CommandSender sender, StringArgs stringArgs, Set<CommandNode> result) {
-        //如果当前的Args指针+Node需要的指针小于等于Args的长度，并且Node解析成功
+        //如果当前的Args指针+Node需要的参数数量小于等于Args的长度，并且Node解析成功
         if (stringArgs.getIndex() + node.getRequiredArgsNum() <= stringArgs.getLength() && node.parse(sender, stringArgs)) {
             //所有叶子节点都是可执行节点，如果不是那肯定是构建树时出了问题
             //假如Node能执行命令，则必然是叶子节点，直接加入待选结果
