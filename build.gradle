@@ -21,7 +21,7 @@ processResources {
 
 jar {
     setArchiveName(
-            "${getArchivesBaseName()}-${project.version}.jar"
+            "Cap-bukkit-${project.version}.jar"
     )
 }
 
