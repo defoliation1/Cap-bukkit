@@ -10,13 +10,13 @@ public class FunctionArgument<T> extends SimpleArgument<T> {
     private Function<String, Optional<T>> parseFunction;
     private Suggester suggester;
 
-    private FunctionArgument(Class responsibleClass, String argumentName) {
+    private FunctionArgument(Class<T> responsibleClass, String argumentName) {
         super(responsibleClass, argumentName);
     }
 
     @Override
-    public Optional parse(String arg) {
-        return Optional.empty();
+    public Optional<T> parse(String arg) {
+        return parseFunction.apply(arg);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class FunctionArgument<T> extends SimpleArgument<T> {
             this.argument = argument;
         }
 
-        public FunctionArgumentBuilder setParse(Function<String, Optional<T>> function) {
+        public FunctionArgumentBuilder<T> setParse(Function<String, Optional<T>> function) {
             argument.parseFunction = function;
             return this;
         }
 
-        public FunctionArgumentBuilder setSuggester(Suggester suggester) {
+        public FunctionArgumentBuilder<T> setSuggester(Suggester suggester) {
             argument.suggester = suggester;
             return this;
         }

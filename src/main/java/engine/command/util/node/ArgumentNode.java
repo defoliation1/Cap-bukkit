@@ -2,6 +2,7 @@ package engine.command.util.node;
 
 import engine.command.CommandSender;
 import engine.command.argument.Argument;
+import engine.command.argument.SenderArgument;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
 
@@ -27,6 +28,8 @@ public class ArgumentNode extends CommandNode {
         if (next.isEmpty()) {
             return null;
         }
+        if (argument instanceof SenderArgument)
+            ((SenderArgument) argument).setSender(sender);
         return argument.parse(next).orElse(null);
     }
 
