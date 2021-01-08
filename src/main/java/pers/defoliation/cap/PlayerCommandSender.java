@@ -113,16 +113,6 @@ public class PlayerCommandSender {
         classNode.accept(classWriter);
         byte[] bytes = classWriter.toByteArray();
 
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("D:\\test.class"));
-            fileOutputStream.write(bytes);
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         ClassLoader classLoader = PlayerCommandSender.class.getClassLoader();
         try {
             Method defineClass = ClassLoader.class.getDeclaredMethod("defineClass", byte[].class, int.class, int.class);
