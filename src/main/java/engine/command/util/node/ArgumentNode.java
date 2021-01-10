@@ -1,10 +1,12 @@
 package engine.command.util.node;
 
-import engine.command.CommandSender;
 import engine.command.argument.Argument;
 import engine.command.argument.SenderArgument;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
+import engine.command.util.context.LinkedContext;
+
+import java.util.Optional;
 
 public class ArgumentNode extends CommandNode {
 
@@ -23,14 +25,17 @@ public class ArgumentNode extends CommandNode {
     }
 
     @Override
-    public Object parseArgs(CommandSender sender, StringArgs args) {
+    public ParseResult parse(LinkedContext context, StringArgs args) {
         String next = args.next();
         if (next.isEmpty()) {
-            return null;
+            return ParseResult.fail();
         }
-        if (argument instanceof SenderArgument)
-            ((SenderArgument) argument).setSender(sender);
-        return argument.parse(next).orElse(null);
+        Optional parse = argument.parse(context, next);
+        if (parse.isPresent()) {
+            return ParseResult.success(parse.get());
+        } else {
+            return ParseResult.fail();
+        }
     }
 
     @Override

@@ -1,15 +1,14 @@
 package engine.command.util.node;
 
-import com.google.common.collect.Lists;
-import engine.command.CommandSender;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
+import engine.command.util.context.LinkedContext;
 
 import java.util.List;
 
 public class RequiredNode extends CommandNode {
 
-    private String require;
+    private final String require;
 
     public RequiredNode(String require) {
         this.require = require;
@@ -21,11 +20,11 @@ public class RequiredNode extends CommandNode {
     }
 
     @Override
-    public Object parseArgs(CommandSender sender, StringArgs args) {
+    public ParseResult parse(LinkedContext context, StringArgs args) {
         if (args.next().equals(require)) {
-            return require;
+            return ParseResult.success(require);
         }
-        return null;
+        return ParseResult.fail();
     }
 
     @Override

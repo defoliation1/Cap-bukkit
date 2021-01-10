@@ -1,9 +1,8 @@
 package engine.command.util.node;
 
-import engine.command.CommandSender;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
-import engine.command.util.SuggesterHelper;
+import engine.command.util.context.LinkedContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class EnumNode extends CommandNode {
 
-    private Class enumClass;
+    private final Class enumClass;
 
     private List<String> enumNames;
 
@@ -39,18 +38,18 @@ public class EnumNode extends CommandNode {
     }
 
     @Override
-    protected Object parseArgs(CommandSender sender, StringArgs args) {
+    public ParseResult parse(LinkedContext context, StringArgs args) {
         String name = args.next();
         if (!enumNames.contains(name)) {
-            return null;
+            return ParseResult.fail();
         }
         if (enumMap.containsKey(name)) {
-            return enumMap.get(name);
+            return ParseResult.success(enumMap.get(name));
         }
         try {
             Object o = enumClass.getMethod("valueOf", String.class).invoke(null, name);
             enumMap.put(name, o);
-            return o;
+            return ParseResult.success(o);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -58,7 +57,7 @@ public class EnumNode extends CommandNode {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return null;
+        return ParseResult.fail();
     }
 
     public Suggester getSuggester() {

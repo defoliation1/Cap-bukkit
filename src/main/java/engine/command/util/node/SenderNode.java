@@ -3,6 +3,7 @@ package engine.command.util.node;
 import engine.command.CommandSender;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
+import engine.command.util.context.LinkedContext;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,11 +22,11 @@ public class SenderNode extends CommandNode {
     }
 
     @Override
-    public Object parseArgs(CommandSender sender, StringArgs args) {
-        if (allowedSender(sender)) {
-            return sender;
+    public ParseResult parse(LinkedContext context, StringArgs args) {
+        if (allowedSender(context.getSender())) {
+            return ParseResult.success(context.getSender());
         }
-        return null;
+        return ParseResult.fail();
     }
 
     public boolean allowedSender(CommandSender sender) {

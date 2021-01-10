@@ -9,7 +9,8 @@ import engine.command.util.node.CommandNode;
 import engine.command.util.node.Nodeable;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class ClassAnnotationCommand extends NodeAnnotationCommand {

@@ -1,12 +1,11 @@
 package engine.command.util.node;
 
-import engine.command.CommandSender;
 import engine.command.argument.Argument;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
+import engine.command.util.context.Context;
+import engine.command.util.context.LinkedContext;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 public class EmptyArgumentNode extends ArgumentNode {
@@ -24,7 +23,7 @@ public class EmptyArgumentNode extends ArgumentNode {
             }
 
             @Override
-            public Optional parse(String arg) {
+            public Optional parse(Context context, String arg) {
                 return Optional.empty();
             }
 
@@ -41,13 +40,8 @@ public class EmptyArgumentNode extends ArgumentNode {
     }
 
     @Override
-    public boolean parse(CommandSender sender, StringArgs args) {
-        return true;
-    }
-
-    @Override
-    public List<Object> collect() {
-        return Collections.emptyList();
+    public ParseResult parse(LinkedContext context, StringArgs args) {
+        return ParseResult.success();
     }
 
     @Override

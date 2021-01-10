@@ -2,6 +2,7 @@ package engine.command.argument.base;
 
 import engine.command.argument.Argument;
 import engine.command.suggestion.Suggester;
+import engine.command.util.context.Context;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,7 +29,7 @@ public class BooleanArgument extends Argument {
      * @return
      */
     @Override
-    public Optional parse(String arg) {
+    public Optional parse(Context context, String arg) {
         if(arg.equals("true")){
             return Optional.of(true);
         }
