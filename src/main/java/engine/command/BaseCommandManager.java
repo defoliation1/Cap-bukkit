@@ -79,7 +79,7 @@ public abstract class BaseCommandManager implements CommandManager {
             return command.suggest(sender, args);
         } catch (Exception e) {
             exceptionHandler.handleOnSuggesting(e);
-            return List.of();
+            return Collections.emptyList();
         }
     }
 
@@ -92,15 +92,15 @@ public abstract class BaseCommandManager implements CommandManager {
     @Override
     public List<String> getTips(CommandSender sender, String name, String... args) {
         if (name == null || name.isEmpty())
-            return List.of();
+            return Collections.emptyList();
         Command command = commands.get(name.toLowerCase());
         if (command == null)
-            return List.of();
+            return Collections.emptyList();
         try {
             return command.getTips(sender, args);
         } catch (Exception e) {
             exceptionHandler.handleOnGettingTips(e);
-            return List.of();
+            return Collections.emptyList();
         }
     }
 
