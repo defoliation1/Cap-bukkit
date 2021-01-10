@@ -1,8 +1,9 @@
 package engine.command.util.node;
 
-import engine.command.CommandSender;
 import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
+import engine.command.util.context.ContextNode;
+import engine.command.util.context.LinkedContext;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -21,32 +22,16 @@ public abstract class CommandNode implements Cloneable, Comparable<CommandNode> 
 
     private String tip;
 
-    protected Object parseResult;
-
     public CommandNode() {
     }
 
-    public boolean parse(CommandSender sender, StringArgs args) {
-        Object result = parseArgs(sender, args);
-        if (result != null) {
-            parseResult = result;
-            return true;
-        }
-        return false;
-    }
-
-    public List<Object> collect() {
-        ArrayList list = new ArrayList();
-        list.add(parseResult);
-        if (parent != null) {
-            list.addAll(parent.collect());
-        }
-        return list;
-    }
+    public abstract ParseResult parse(LinkedContext context, StringArgs args);
 
     public abstract int getRequiredArgsNum();
 
-    protected abstract Object parseArgs(CommandSender sender, StringArgs args);
+    public void collect(ContextNode node){
+
+    }
 
     public CommandNode getParent() {
         return parent;

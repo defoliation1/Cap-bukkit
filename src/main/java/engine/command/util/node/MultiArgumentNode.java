@@ -1,18 +1,18 @@
 package engine.command.util.node;
 
-import engine.command.CommandSender;
 import engine.command.util.StringArgs;
+import engine.command.util.context.ContextNode;
+import engine.command.util.context.LinkedContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 public class MultiArgumentNode extends CommandNode {
 
-    private CommandNode commandNode;
-    private Function<Object[], Object> instanceFunction;
-    private int argsNum;
+    private final CommandNode commandNode;
+    private final Function<Object[], Object> instanceFunction;
+    private final int argsNum;
 
     public MultiArgumentNode(CommandNode commandNode, Function<Object[], Object> instanceFunction, int argsNum) {
         this.commandNode = commandNode;
@@ -21,46 +21,31 @@ public class MultiArgumentNode extends CommandNode {
     }
 
     @Override
-    public List<Object> collect() {
-        ArrayList list = new ArrayList();
-
-        MultiInstance instance = getMultiArgInstance();
-
-        list.add(instance.instance);
-
-        if (instance.parent != null) {
-            list.addAll(instance.parent.collect());
-        }
-
-        return list;
-    }
-
-    private MultiInstance getMultiArgInstance() {
-        ArrayList<Object> args = new ArrayList<>();
-        CommandNode parent = this;
-        for (int i = 0; i < this.argsNum + getRequiredArgsNum(); i++) {
-            if (parent.parseResult == null) {
-                i--;
-            } else {
-                args.add(parent.parseResult);
-                parent.parseResult = null;
-                parent = parent.getParent();
-            }
-        }
-        Collections.reverse(args);
-        return new MultiInstance(parent, instanceFunction.apply(args.toArray(new Object[0])));
-    }
-
-    @Override
     public int getRequiredArgsNum() {
         return commandNode.getRequiredArgsNum();
     }
 
     @Override
-    protected Object parseArgs(CommandSender sender, StringArgs args) {
-        return commandNode.parseArgs(sender, args);
+    public ParseResult parse(LinkedContext sender, StringArgs args) {
+        return commandNode.parse(sender, args);
     }
 
+    @Override
+    public void collect(ContextNode node) {
+        List<Object> objectList = new ArrayList<>();
+        ContextNode headNode = node;
+        for (int i = 0; i < argsNum; i++) {
+            headNode = headNode.getPre();
+        }
+        ContextNode pre = headNode.getPre();
+        for (int i = 0; i < argsNum + 1; i++) {
+            objectList.add(headNode.getValue());
+            headNode = headNode.getNext();
+        }
+        node.setValue(instanceFunction.apply(objectList.toArray()));
+        pre.setNext(node);
+        node.setPre(pre);
+    }
 
     @Override
     public String getTip() {
@@ -75,16 +60,6 @@ public class MultiArgumentNode extends CommandNode {
     @Override
     public boolean hasTip() {
         return commandNode.hasTip();
-    }
-
-    private class MultiInstance {
-        public final CommandNode parent;
-        public final Object instance;
-
-        public MultiInstance(CommandNode parent, Object instance) {
-            this.parent = parent;
-            this.instance = instance;
-        }
     }
 
     @Override

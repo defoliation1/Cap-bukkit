@@ -6,13 +6,16 @@ import java.util.stream.Collectors;
 public abstract class BaseCommandManager implements CommandManager {
 
     private final Map<String, Command> commands = new HashMap<>();
-    private final CommandParser resolver = createCommandParser();
+    private final CommandParser parser = createCommandParser();
+    private final CommandExceptionHandler exceptionHandler = createExceptionHandler();
 
     protected abstract CommandParser createCommandParser();
 
+    protected abstract CommandExceptionHandler createExceptionHandler();
+
     @Override
     public void registerCommand(Command command) {
-        if (commands.containsKey(command.getName()))
+        if (hasCommand(command.getName()))
             throw new RuntimeException("Command \"" + command.getName() + "\" already exists");
         commands.put(command.getName().toLowerCase(), command);
     }
@@ -24,17 +27,17 @@ public abstract class BaseCommandManager implements CommandManager {
 
     @Override
     public Optional<Command> getCommand(String name) {
-        return Optional.ofNullable(commands.get(name));
+        return Optional.ofNullable(commands.get(name.toLowerCase()));
     }
 
     @Override
     public boolean hasCommand(String name) {
-        return commands.containsKey(name);
+        return commands.containsKey(name.toLowerCase());
     }
 
     @Override
     public void execute(CommandSender sender, String command) {
-        CommandParser.Result parsedCommand = resolver.parse(command);
+        CommandParser.Result parsedCommand = parser.parse(command);
         execute(sender, parsedCommand.getName(), parsedCommand.getArgs());
     }
 
@@ -42,15 +45,19 @@ public abstract class BaseCommandManager implements CommandManager {
     public void execute(CommandSender sender, String name, String... args) {
         Command command = commands.get(name.toLowerCase());
         if (command == null) {
-            sender.sendCommandException(new CommandException(CommandException.Type.COMMAND_NOT_FOUND, sender, name, args));
+            sender.sendCommandFailure(new CommandFailure(CommandFailure.Type.COMMAND_NOT_FOUND, sender, name, args));
             return;
         }
-        command.execute(sender, args != null ? args : new String[0]);
+        try {
+            command.execute(sender, args != null ? args : new String[0]);
+        } catch (Exception e) {
+            exceptionHandler.handleOnExecuting(e);
+        }
     }
 
     @Override
     public List<String> complete(CommandSender sender, String command) {
-        CommandParser.Result result = resolver.parse(command);
+        CommandParser.Result result = parser.parse(command);
         return complete(sender, result.getName(), result.getArgs());
     }
 
@@ -68,37 +75,52 @@ public abstract class BaseCommandManager implements CommandManager {
             return Collections.emptyList();
         }
 
-        return command.suggest(sender, args);
+        try {
+            return command.suggest(sender, args);
+        } catch (Exception e) {
+            exceptionHandler.handleOnSuggesting(e);
+            return List.of();
+        }
     }
 
     @Override
     public List<String> getTips(CommandSender sender, String command) {
-        CommandParser.Result result = resolver.parse(command);
+        CommandParser.Result result = parser.parse(command);
         return getTips(sender, result.getName(), result.getArgs());
     }
 
     @Override
     public List<String> getTips(CommandSender sender, String name, String... args) {
         if (name == null || name.isEmpty())
-            return Collections.emptyList();
-        Command commandInstance = commands.get(name.toLowerCase());
-        if (commandInstance == null)
-            return Collections.emptyList();
-        return commandInstance.getTips(sender, args);
+            return List.of();
+        Command command = commands.get(name.toLowerCase());
+        if (command == null)
+            return List.of();
+        try {
+            return command.getTips(sender, args);
+        } catch (Exception e) {
+            exceptionHandler.handleOnGettingTips(e);
+            return List.of();
+        }
     }
 
     @Override
     public ArgumentCheckResult checkLastArgument(CommandSender sender, String command) {
-        CommandParser.Result result = this.resolver.parse(command);
+        CommandParser.Result result = this.parser.parse(command);
         return checkLastArgument(sender, result.getName(), result.getArgs());
     }
 
     @Override
     public ArgumentCheckResult checkLastArgument(CommandSender sender, String name, String... args) {
-        Command command1 = commands.get(name.toLowerCase());
-        if (command1 == null)
-            return ArgumentCheckResult.Error("/" + name + "  command not found");
-        return command1.checkLastArgument(sender, args);
+        Command command = commands.get(name.toLowerCase());
+        if (command == null)
+            return ArgumentCheckResult.Error("/" + name + "  command not found"); // TODO: L10n
+        try {
+            return command.checkLastArgument(sender, args);
+        } catch (Exception e) {
+            exceptionHandler.handleOnCheckingArgument(e);
+            return ArgumentCheckResult.Error("Caught an exception when check last argument"); // TODO: L10n
+        }
     }
 
     @Override

@@ -24,7 +24,7 @@ public class SimpleArgumentManager implements ArgumentManager {
 
     @Override
     public void appendArgument(Argument argument) {
-        if (argumentByName.containsKey(argument.getName())){
+        if (argumentByName.containsKey(argument.getName())) {
             throw new RuntimeException("argument already exist");
         }
         argumentByName.put(argument.getName(), argument);
@@ -32,7 +32,7 @@ public class SimpleArgumentManager implements ArgumentManager {
 
     public void appendArgumentAndSetDefaultIfNotExist(Argument argument) {
         appendArgument(argument);
-        if (!argumentByClass.containsKey(argument.responsibleClass())){
+        if (!argumentByClass.containsKey(argument.responsibleClass())) {
             setClassDefaultArgument(argument);
         }
     }
