@@ -14,7 +14,7 @@ import engine.command.util.context.ContextNode;
 import engine.command.util.context.LinkedContext;
 import engine.command.util.node.*;
 import engine.permission.Permissible;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -129,7 +129,7 @@ public class NodeAnnotationCommand extends Command implements Nodeable {
                     break;
                 case '|': {
                     String s = stringBuilder.toString();
-                    if (!s.isBlank()) {
+                    if (!StringUtils.isBlank(s)) {
                         permissionWrapperStack.push(new PermissionWrapper(permissible, s.trim()));
                     }
                     stringBuilder.delete(0, stringBuilder.length());
@@ -151,7 +151,7 @@ public class NodeAnnotationCommand extends Command implements Nodeable {
                 }
                 case '&': {
                     String s = stringBuilder.toString();
-                    if (!s.isBlank()) {
+                    if (!StringUtils.isBlank(s)) {
                         permissionWrapperStack.push(new PermissionWrapper(permissible, s.trim()));
                     }
                     stringBuilder.delete(0, stringBuilder.length());
@@ -160,7 +160,7 @@ public class NodeAnnotationCommand extends Command implements Nodeable {
                 }
                 case ')': {
                     String s = stringBuilder.toString();
-                    if (!s.isBlank()) {
+                    if (!StringUtils.isBlank(s)) {
                         permissionWrapperStack.push(new PermissionWrapper(permissible, s.trim()));
                     }
                     stringBuilder.delete(0, stringBuilder.length());
@@ -179,7 +179,7 @@ public class NodeAnnotationCommand extends Command implements Nodeable {
         }
 
         String s = stringBuilder.toString();
-        if (!s.isBlank())
+        if (!StringUtils.isBlank(s))
             permissionWrapperStack.push(new PermissionWrapper(permissible, s.trim()));
 
         while (!operatorStack.isEmpty())
