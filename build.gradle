@@ -29,6 +29,12 @@ def releaseTime() {
     return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("UTC"))
 }
 
+jar {
+    from {
+        configurations.runtimeClasspath.collect  { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     maven {
         url 'https://maven.aliyun.com/repository/public'
@@ -50,8 +56,8 @@ test {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:30.1-jre'
-    compile 'org.apache.commons:commons-lang3:3.11'
+    compileOnly 'com.google.guava:guava:30.1-jre'
+    compileOnly 'org.apache.commons:commons-lang3:3.11'
 
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-tree', version: '7.1'
@@ -60,5 +66,5 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
-    implementation(group: "org.spigotmc", name: "spigot", version: "1.12.2-R0.1-SNAPSHOT")
+    compileOnly (group: "org.spigotmc", name: "spigot", version: "1.12.2-R0.1-SNAPSHOT")
 }

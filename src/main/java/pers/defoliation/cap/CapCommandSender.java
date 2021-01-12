@@ -10,6 +10,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class CapCommandSender implements CommandSender, org.bukkit.command.Comma
 
     @Override
     public void sendCommandFailure(CommandFailure failure) {
-        sendMessage("command exception: " + failure.getType() + " message: " + failure.getMessage());
+        sendMessage("command exception: " + failure.getType() + " message: " + failure.getMessage() + " args: " + Arrays.toString(failure.getArgs()));
     }
 
     @Override

@@ -23,13 +23,13 @@ public class CapCommandManager {
 
     private static SimpleCommandMap simpleCommandMap;
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
-    private SimpleCommandManager simpleCommandManager = new SimpleCommandManager();
+    private final SimpleCommandManager simpleCommandManager = new SimpleCommandManager();
 
-    private ArgumentManager argumentManager = new SimpleArgumentManager();
+    private final ArgumentManager argumentManager = new SimpleArgumentManager();
 
-    private SuggesterManager suggesterManager = new SimpleSuggesterManager();
+    private final SuggesterManager suggesterManager = new SimpleSuggesterManager();
 
     public CapCommandManager(Plugin plugin) {
         argumentManager.setClassDefaultArgument(new WorldArgument());
