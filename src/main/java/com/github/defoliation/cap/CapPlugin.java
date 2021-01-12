@@ -1,4 +1,4 @@
-package pers.defoliation.cap;
+package com.github.defoliation.cap;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

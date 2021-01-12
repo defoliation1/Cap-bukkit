@@ -1,4 +1,4 @@
-package pers.defoliation.cap;
+package com.github.defoliation.cap;
 
 import engine.command.Command;
 import engine.command.CommandManager;

@@ -1,16 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: "idea"
-
+apply plugin: 'com.novoda.bintray-release'
 
 sourceCompatibility = targetCompatibility = 8
 
-group 'pers.defoliation'
+group 'com.github.defoliation'
 version releaseTime() + '.1'
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -19,19 +15,47 @@ processResources {
     }
 }
 
-jar {
-    setArchiveName(
-            "Cap-bukkit-${project.version}.jar"
-    )
-}
-
 def releaseTime() {
     return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("UTC"))
 }
 
 jar {
+    setArchiveName(
+            "Cap-bukkit-${project.version}.jar"
+    )
     from {
         configurations.runtimeClasspath.collect  { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.1'
+    }
+}
+
+publish {
+    userOrg = 'defoliation'
+    groupId = 'com.github.defoliation'
+    artifactId = 'Cap-Bukkit'
+    publishVersion = project.version
+    desc = 'a command util for bukkit'
+    website = 'https://github.com/defoliation1/Cap-bukkit'
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {
+        options{
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
     }
 }
 
@@ -55,9 +79,11 @@ test {
     useJUnitPlatform()
 }
 
+
 dependencies {
     compileOnly 'com.google.guava:guava:30.1-jre'
     compileOnly 'org.apache.commons:commons-lang3:3.11'
+    compileOnly (group: "org.spigotmc", name: "spigot", version: "1.12.2-R0.1-SNAPSHOT")
 
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-tree', version: '7.1'
@@ -66,5 +92,4 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
-    compileOnly (group: "org.spigotmc", name: "spigot", version: "1.12.2-R0.1-SNAPSHOT")
 }

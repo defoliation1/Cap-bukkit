@@ -1,4 +1,4 @@
-package pers.defoliation.cap;
+package com.github.defoliation.cap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -8,9 +8,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

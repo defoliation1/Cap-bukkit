@@ -1,4 +1,4 @@
-package pers.defoliation.cap;
+package com.github.defoliation.cap;
 
 import engine.command.anno.Provide;
 import engine.command.anno.Sender;

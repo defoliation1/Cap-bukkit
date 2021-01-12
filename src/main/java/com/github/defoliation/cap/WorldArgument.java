@@ -1,4 +1,4 @@
-package pers.defoliation.cap;
+package com.github.defoliation.cap;
 
 import engine.command.argument.SimpleArgument;
 import engine.command.suggestion.Suggester;
