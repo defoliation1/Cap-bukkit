@@ -5,6 +5,7 @@ import engine.command.util.context.Context;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class FunctionArgument<T> extends SimpleArgument<T> {
 
@@ -17,7 +18,7 @@ public class FunctionArgument<T> extends SimpleArgument<T> {
 
     @Override
     public Optional parse(Context context, String arg) {
-        return Optional.empty();
+        return parseFunction.apply(context, arg);
     }
 
     @Override
@@ -35,6 +36,10 @@ public class FunctionArgument<T> extends SimpleArgument<T> {
 
         public void setParse(BiFunction<Context, String, Optional<T>> function) {
             argument.parseFunction = function;
+        }
+
+        public void setParse(Function<String, Optional<T>> function) {
+            argument.parseFunction = (context, s) -> function.apply(s);
         }
 
         public void setSuggester(Suggester suggester) {

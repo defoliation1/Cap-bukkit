@@ -1,6 +1,6 @@
 package pers.defoliation.cap;
 
-import engine.command.CommandException;
+import engine.command.CommandFailure;
 import engine.command.CommandSender;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Server;
@@ -32,6 +32,11 @@ public class CapCommandSender implements CommandSender, org.bukkit.command.Comma
     }
 
     @Override
+    public void sendCommandFailure(CommandFailure failure) {
+        sendMessage("command exception: " + failure.getType() + " message: " + failure.getMessage());
+    }
+
+    @Override
     public void sendMessage(String[] messages) {
         bukkitSender.sendMessage(messages);
     }
@@ -49,11 +54,6 @@ public class CapCommandSender implements CommandSender, org.bukkit.command.Comma
     @Override
     public Spigot spigot() {
         return bukkitSender.spigot();
-    }
-
-    @Override
-    public void sendCommandException(CommandException exception) {
-        sendMessage("command exception: " + exception.getType() + " message: " + exception.getMessage());
     }
 
     @Override

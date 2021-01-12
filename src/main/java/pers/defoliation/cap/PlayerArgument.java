@@ -2,6 +2,7 @@ package pers.defoliation.cap;
 
 import engine.command.argument.SimpleArgument;
 import engine.command.suggestion.Suggester;
+import engine.command.util.context.Context;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ public class PlayerArgument extends SimpleArgument<Player> {
     }
 
     @Override
-    public Optional<Player> parse(String arg) {
+    public Optional<Player> parse(Context context, String arg) {
         Player player = Bukkit.getPlayer(arg);
         if (player != null) {
             return Optional.of(player);

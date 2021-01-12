@@ -2,6 +2,7 @@ package pers.defoliation.cap;
 
 import engine.command.argument.SimpleArgument;
 import engine.command.suggestion.Suggester;
+import engine.command.util.context.Context;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -15,7 +16,7 @@ public class WorldArgument extends SimpleArgument<World> {
     }
 
     @Override
-    public Optional<World> parse(String arg) {
+    public Optional<World> parse(Context context, String arg) {
         return Optional.ofNullable(Bukkit.getWorld(arg));
     }
 
