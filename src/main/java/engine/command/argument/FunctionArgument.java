@@ -34,16 +34,19 @@ public class FunctionArgument<T> extends SimpleArgument<T> {
             this.argument = argument;
         }
 
-        public void setParse(BiFunction<Context, String, Optional<T>> function) {
+        public FunctionArgumentBuilder setParse(BiFunction<Context, String, Optional<T>> function) {
             argument.parseFunction = function;
+            return this;
         }
 
-        public void setParse(Function<String, Optional<T>> function) {
+        public FunctionArgumentBuilder setParse(Function<String, Optional<T>> function) {
             argument.parseFunction = (context, s) -> function.apply(s);
+            return this;
         }
 
-        public void setSuggester(Suggester suggester) {
+        public FunctionArgumentBuilder setSuggester(Suggester suggester) {
             argument.suggester = suggester;
+            return this;
         }
 
         public FunctionArgument<T> get() {
