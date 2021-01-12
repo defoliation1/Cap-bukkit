@@ -4,7 +4,7 @@ import engine.command.suggestion.Suggester;
 import engine.command.util.StringArgs;
 import engine.command.util.context.LinkedContext;
 
-import java.util.List;
+import java.util.Collections;
 
 public class RequiredNode extends CommandNode {
 
@@ -29,7 +29,7 @@ public class RequiredNode extends CommandNode {
 
     @Override
     public Suggester getSuggester() {
-        return (sender, command, args) -> Lists.newArrayList(require);
+        return (sender, command, args) -> Collections.singletonList(require);
     }
 
     public String getRequire() {
